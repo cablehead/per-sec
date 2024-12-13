@@ -1,12 +1,12 @@
-use std::io::{self, Read, BufRead, BufReader};
+use std::env;
+use std::io::{self, BufReader, Read};
 use std::process::{Command, Stdio};
 use std::time::{Duration, Instant};
-use std::env;
 use timeout_readwrite::TimeoutReader;
 
 fn main() -> io::Result<()> {
     let args: Vec<String> = env::args().skip(1).collect();
-    
+
     if args.is_empty() {
         eprintln!("Usage: {} <command> [args...]", env::args().next().unwrap());
         std::process::exit(1);
@@ -17,12 +17,12 @@ fn main() -> io::Result<()> {
 
     // Buffer for accumulating stdin
     let mut current_buffer = Vec::new();
-    
+
     // Create a timeout reader for stdin with 1 second timeout
     let stdin = io::stdin();
     let timeout_reader = TimeoutReader::new(stdin, Duration::from_secs(1));
     let mut reader = BufReader::new(timeout_reader);
-    
+
     // Track time for 1-second intervals
     let mut last_execution = Instant::now();
 
